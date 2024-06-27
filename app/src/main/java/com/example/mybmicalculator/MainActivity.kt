@@ -1,0 +1,62 @@
+package com.example.mybmicalculator
+
+import android.app.Activity
+import android.os.Bundle
+import android.text.TextUtils
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+
+class MainActivity : Activity() {
+
+    private lateinit var heightEditText: EditText
+    private lateinit var weightEditText: EditText
+    private lateinit var resultTextView: TextView
+    private lateinit var calculateButton: Button
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        // Initialize views
+        heightEditText = findViewById(R.id.height)
+        weightEditText = findViewById(R.id.weight)
+        resultTextView = findViewById(R.id.result)
+        calculateButton = findViewById(R.id.btn)
+
+        // Set onClick listener for the button
+        calculateButton.setOnClickListener {
+            calculateBMI()
+        }
+    }
+
+    private fun calculateBMI() {
+        val heightStr = heightEditText.text.toString()
+        val weightStr = weightEditText.text.toString()
+
+        if (!TextUtils.isEmpty(heightStr) && !TextUtils.isEmpty(weightStr)) {
+            val height = heightStr.toFloat()
+            val weight = weightStr.toFloat()
+
+            val bmi = weight / (height * height)
+
+            displayBMI(bmi)
+        } else {
+            resultTextView.text = "Please enter valid values"
+        }
+    }
+
+    private fun displayBMI(bmi: Float) {
+        val bmiLabel: String = when {
+            bmi < 18.5 -> "Underweight"
+            (bmi >18.5) && (bmi < 24.9) -> "Normal"
+            (bmi > 25.0) && (bmi < 29.9) -> "Overweight"
+            (bmi > 30.0) && (bmi < 34.9) -> "Obesity class I"
+            (bmi > 35.0) && (bmi < 39.9) -> "Obesity class II"
+            bmi > 40 -> "Obesity class III"
+            else -> "Obese"
+        }
+
+        resultTextView.text = String.format("BMI: %.2f\n%s", bmi, bmiLabel)
+    }
+}
